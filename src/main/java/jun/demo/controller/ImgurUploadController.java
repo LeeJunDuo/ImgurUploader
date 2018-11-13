@@ -4,6 +4,7 @@ import jun.demo.Utils;
 import jun.demo.bean.UploadEvent;
 import jun.demo.dto.SubmitRequest;
 import jun.demo.dto.SubmitResponse;
+import jun.demo.dto.UploadedImage;
 import jun.demo.service.ImgurService;
 import jun.demo.service.WrapperService;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,8 @@ public class ImgurUploadController {
 
 	@GetMapping(value = "", produces = "application/json")
 	public ResponseEntity<Object> getSubmitionResult() {
-		return new ResponseEntity("Get Submition Result", HttpStatus.OK);
+		UploadedImage image = wrapperService.getAllUploadedImages(imgurService.getUploadedImages(eventRecord));
+		return new ResponseEntity(image, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "upload/{jobId}", produces = "application/json")

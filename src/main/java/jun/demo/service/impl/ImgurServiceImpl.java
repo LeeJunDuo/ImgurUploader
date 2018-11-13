@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 
 @Service("ImgurService")
@@ -36,5 +38,18 @@ public class ImgurServiceImpl implements ImgurService {
 //		eventRecord.put(jobId, uploadEvent);
 		SubmitAttr submitAttr = new SubmitAttr(sinkPath, clientId, submitUrl);
 		imageSrc.forEach(src -> exec.execute(new UploadTask(src, submitAttr)));
+	}
+
+	@Override
+	public List<String> getUploadedImages(Map<String, UploadEvent> eventRecord) {
+		List<String> uploaded = new LinkedList<>();
+		for (String jobId : eventRecord.keySet()) {
+			UploadEvent event = eventRecord.get(jobId);
+			event.getImageStatus().values()
+					.stream()
+					.filter(src -> src.trim().length() > 0)
+					.forEach(src -> uploaded.add(src));
+		}
+		return uploaded;
 	}
 }
