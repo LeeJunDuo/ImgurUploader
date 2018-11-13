@@ -1,5 +1,7 @@
 package jun.demo.helper.imgur;
 
+import java.util.LinkedHashMap;
+
 public class PostResult {
 	private LinkedHashMap data;
 	private Boolean success;
