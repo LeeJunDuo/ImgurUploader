@@ -1,21 +1,24 @@
 package jun.demo.helper.imgur;
 
 public class PostResult {
-	private ImageInfo data;
+	private LinkedHashMap data;
 	private Boolean success;
 	private Integer status;
 
-	public PostResult(ImageInfo data, Boolean success, Integer status) {
+	public PostResult(LinkedHashMap data, Boolean success, Integer status) {
 		this.data = data;
 		this.success = success;
 		this.status = status;
 	}
 
-	public ImageInfo getData() {
+	public PostResult() {
+	}
+
+	public LinkedHashMap getData() {
 		return data;
 	}
 
-	public void setData(ImageInfo data) {
+	public void setData(LinkedHashMap data) {
 		this.data = data;
 	}
 

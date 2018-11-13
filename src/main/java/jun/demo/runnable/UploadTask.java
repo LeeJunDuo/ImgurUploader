@@ -12,11 +12,9 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 @PropertySource("classpath:application.properties")
 public class UploadTask implements Runnable {
@@ -37,6 +35,16 @@ public class UploadTask implements Runnable {
 
 	@Override
 	public void run() {
+		// UploadTask to Imgur
+		String clientId = "a72e4a3ce31ccef";
+		ImgurHelper imgurHelper = new ImgurHelper(clientId);
+		PostResult postResult = imgurHelper.uploadImage("https://api.imgur.com/3/image", this.imageUrl).get();
+		//PostResult postResult = imgurHelper.uploadImage("https://api.imgur.com/3/image", dbb.getData()).get();
+		System.out.println("PostResult: " + postResult.toString());
+	}
+
+	private void downloadImage(String imageUrl) {
+
 		// Download image
 		Image img = null;
 		try {
@@ -46,22 +54,17 @@ public class UploadTask implements Runnable {
 		}
 
 		// Save image.
-		String fileName = extracFileName(imageUrl);
-		File file = new File(imagePath + fileName);
-		try {
-			assert img != null;
-			ImageIO.write((RenderedImage) img, getExtention(fileName), file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//String fileName = extracFileName(imageUrl);
+		//File file = new File(imagePath + fileName);
+		//try {
+		//	assert img != null;
+		//	ImageIO.write((RenderedImage) img, getExtention(fileName), file);
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//}
 
-
-		// UploadTask to Imgur
-		ImgurHelper imgurHelper = new ImgurHelper(this.clientId);
 		WritableRaster wr = ((BufferedImage) img).getRaster();
 		DataBufferByte dbb = (DataBufferByte) wr.getDataBuffer();
-		PostResult postResult = imgurHelper.uploadImage(this.imgurUploadUrl, dbb.getData()).get();
-		System.out.println("PostResult: " + postResult.toString());
 	}
 
 	private String extracFileName(String imageUrl) {
@@ -72,7 +75,8 @@ public class UploadTask implements Runnable {
 	}
 
 	private String getExtention(String fileName) {
-		String[] f = fileName.split(".");
-		return f[f.length - 1];
+		//String[] f = fileName.split(".");
+		//return f[f.length - 1];
+		return "jpg";
 	}
 }
