@@ -1,6 +1,7 @@
 package jun.demo.runnable;
 
 import jun.demo.bean.SubmitAttr;
+import jun.demo.bean.UploadEvent;
 import jun.demo.helper.imgur.ImgurHelper;
 import jun.demo.helper.imgur.PostResult;
 
@@ -11,15 +12,19 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 public class UploadTask implements Runnable {
 
 	private String imageSrc;
 	private SubmitAttr submitAttr;
+	private Map<String, String > uploadStatus;
 
-	public UploadTask(String imageSrc, SubmitAttr submitAttr) {
+	public UploadTask(String imageSrc, SubmitAttr submitAttr, Map<String, String > uploadStatus) {
 		this.imageSrc = imageSrc;
 		this.submitAttr = submitAttr;
+		this.uploadStatus = uploadStatus;
+		this.uploadStatus.put(imageSrc, "");
 	}
 
 	@Override
@@ -28,9 +33,10 @@ public class UploadTask implements Runnable {
 		String clientId = submitAttr.getClientId();
 		ImgurHelper imgurHelper = new ImgurHelper(clientId);
 		PostResult postResult = imgurHelper.uploadImage(submitAttr.getSubmitUrl(), this.imageSrc).get();
-		System.out.println("PostResult: " + postResult.toString());
+		System.out.println("PostResult: " + postResult.getData().toString());
 
 		// Update Concurrent Map
+		uploadStatus.put(this.imageSrc, (String)postResult.getData().get("link"));
 	}
 
 	private void downloadImage(String imageSrc) {

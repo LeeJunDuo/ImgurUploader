@@ -33,11 +33,9 @@ public class ImgurServiceImpl implements ImgurService {
 	ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
 	@Override
-	public void upload(List<String> imageSrc, String jobId, Map<String, UploadEvent> eventRecord) {
-//		UploadEvent uploadEvent = new UploadEvent(jobId, new ConcurrentHashMap<>());
-//		eventRecord.put(jobId, uploadEvent);
+	public void upload(List<String> imageSrc, UploadEvent uploadEvent) {
 		SubmitAttr submitAttr = new SubmitAttr(sinkPath, clientId, submitUrl);
-		imageSrc.forEach(src -> exec.execute(new UploadTask(src, submitAttr)));
+		imageSrc.forEach(src -> exec.execute(new UploadTask(src, submitAttr, uploadEvent.getImageStatus())));
 	}
 
 	@Override

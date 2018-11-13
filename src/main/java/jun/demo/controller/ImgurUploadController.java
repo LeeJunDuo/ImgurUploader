@@ -55,16 +55,20 @@ public class ImgurUploadController {
 		}
 		LocalDateTime currentDateTime = LocalDateTime.now();
 		String jobId = generateJobId(currentDateTime);
-		imgurService.upload(imageUrls.getUrls(), jobId, eventRecord);
+		newUploadEvent(jobId);
+		imgurService.upload(imageUrls.getUrls(), eventRecord.get(jobId));
 		SubmitResponse sr = wrapperService.submitEvent(jobId);
 		return new ResponseEntity(sr, HttpStatus.OK);
 	}
 
 
 	private String  generateJobId(LocalDateTime dateTime) {
-
 		String jobId = Utils.md5(dateTime.toString());
 		System.out.println("LocalDateTime " + dateTime.toString() + " to md5 : " + jobId);
 		return jobId;
+	}
+
+	private void newUploadEvent(String jobId) {
+		eventRecord.put(jobId, new UploadEvent(jobId, new ConcurrentHashMap<>()));
 	}
 }
